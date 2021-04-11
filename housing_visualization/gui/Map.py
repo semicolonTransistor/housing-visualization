@@ -30,6 +30,8 @@ class Map(FigureCanvasQTAgg):
         self.last_update = timeit.default_timer()
         self.dragging = False
         self.drag_start = (0.0, 0.0)
+        self.cur_date = "2021-02-28"
+        self.dates = self.repo.get_dates()
         self.update_plot()
 
     def update_plot(self):
@@ -49,7 +51,7 @@ class Map(FigureCanvasQTAgg):
         zipcodes_visible = self.repo.get_zipcodes_within_bbox(bbox[0], bbox[1])
         zipcodes_data_visible = self.zipcode_data[self.zipcode_data.ZCTA5CE10.isin(zipcodes_visible)].copy()
         zipcodes_data_visible["value"] = zipcodes_data_visible["ZCTA5CE10"].apply(
-            lambda zipcode: self.repo.get_house_value_by_date_and_zipcode(zipcode, "2021-02-28"))
+            lambda zipcode: self.repo.get_house_value_by_date_and_zipcode(zipcode, self.cur_date))
         graph_min = zipcodes_data_visible["value"].quantile(0.1)
         graph_max = zipcodes_data_visible["value"].quantile(0.9)
         zipcodes_data_visible.plot(ax=self.axes, column="value", legend=True, vmin=graph_min, vmax=graph_max,
@@ -91,3 +93,7 @@ class Map(FigureCanvasQTAgg):
         if not event.buttons() & QtCore.Qt.MiddleButton:
             self.dragging = False
         print(self.dragging)
+
+
+    def update_date_by_idx(self, idx):
+        self.cur_date = self.dates[idx]

@@ -90,6 +90,11 @@ class DataRepository:
         else:
             return None
 
+    def get_dates(self):
+        result = self.conn.execute("SELECT DISTINCT h.date from house_values h").fetchall()
+
+        return sorted([x[0] for x in result])
+
     def close(self):
         self.conn.close()
 
