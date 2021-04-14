@@ -18,6 +18,8 @@ class Map(FigureCanvasQTAgg):
 
     min_update_interval = 0.1
 
+    center_changed = QtCore.pyqtSignal(object)
+
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes: Axes = self.fig.gca()
@@ -87,6 +89,7 @@ class Map(FigureCanvasQTAgg):
             self.drag_start = (event.x(), event.y())
 
             self.update_plot()
+            self.center_changed.emit(self.center)
 
 
     def mouseReleaseEvent(self, event:Qt.QMouseEvent):
