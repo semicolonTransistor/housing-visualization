@@ -162,6 +162,7 @@ class Ui_mapgui(object):
         self.lineEdit_3.setText("{:.6f}".format(self.mapping.center[1]))
         self.lineEdit_2.setText("{:.6f}".format(self.mapping.center[0]))
         self.checkBox.setText(_translate("mapgui", "Show Zip Codes"))
+        self.horizontalSlider.setValue(self.horizontalSlider.maximum())
 
 
 if __name__ == "__main__":
