@@ -27,7 +27,7 @@ class Ui_mapgui(object):
         self.widget = QtWidgets.QWidget(self.verticalLayoutWidget)
         self.widget.setObjectName("widget")
         self.mapping = Map()
-        self.mapping.center_changed.connect(self.update_lat_lon)
+        self.mapping.center_changed.connect(self.update_lat_lon_text)
         self.verticalLayout.addWidget(self.mapping)
         self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(20, 500, 761, 82))
@@ -58,10 +58,16 @@ class Ui_mapgui(object):
         self.label_3.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_3.setObjectName("label_3")
         self.horizontalLayout_2.addWidget(self.label_3)
-        self.lineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget_2)
-        self.lineEdit.setMaximumSize(QtCore.QSize(150, 16777215))
-        self.lineEdit.setObjectName("lineEdit")
-        self.horizontalLayout_2.addWidget(self.lineEdit)
+
+        self.comboBox = QtWidgets.QComboBox(self.verticalLayoutWidget_2)
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItems(self.mapping.dates)
+        self.horizontalLayout_2.addWidget(self.comboBox)
+
+        # self.lineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget_2)
+        # self.lineEdit.setMaximumSize(QtCore.QSize(150, 16777215))
+        # self.lineEdit.setObjectName("lineEdit")
+        # self.horizontalLayout_2.addWidget(self.lineEdit)
         self.horizontalLayout.addLayout(self.horizontalLayout_2)
         self.label = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.label.setMinimumSize(QtCore.QSize(200, 0))
@@ -81,6 +87,8 @@ class Ui_mapgui(object):
         self.horizontalLayout_3.addWidget(self.lineEdit_3)
         self.lineEdit_2 = QtWidgets.QLineEdit(self.verticalLayoutWidget_2)
         self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_2.editingFinished.connect(self.update_lon)
+        self.lineEdit_3.editingFinished.connect(self.update_lat)
         self.horizontalLayout_3.addWidget(self.lineEdit_2)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
         mapgui.setCentralWidget(self.centralwidget)
@@ -96,15 +104,43 @@ class Ui_mapgui(object):
         QtCore.QMetaObject.connectSlotsByName(mapgui)
 
     def update_from_slider(self, slider_val):
-        self.lineEdit.setText(str(self.mapping.dates[slider_val]))
+        """Updates the date while the slider is being moved"""
+        self.comboBox.setCurrentIndex(slider_val)
 
     def update_date(self):
+        """Updates the Map date if the slider is released"""
         self.mapping.update_date_by_idx(self.horizontalSlider.value())
         self.mapping.update_plot()
 
-    def update_lat_lon(self, value):
-        self.lineEdit_3.setText(str(value[1]))
-        self.lineEdit_2.setText(str(value[0]))
+    def update_lat_lon_text(self, value):
+        """Updates the text of lat lon if the map is dragged"""
+        self.lineEdit_3.setText("{:.6f}".format(value[1]))
+        self.lineEdit_2.setText("{:.6f}".format(value[0]))
+
+    def update_lat(self):
+        """Updates the Map latitude if manually changed"""
+        value = float(self.lineEdit_3.displayText())
+
+        # Bounds check on the United States, silently fall back to the old center on failure for now
+        if value <= 18.91619 or value >= 71.35776:
+            self.lineEdit_3.setText("{:.6f}".format(self.mapping.center[1]))
+            return
+
+        self.mapping.center = [self.mapping.center[0], value]
+        self.mapping.update_plot()
+
+    def update_lon(self):
+        """Updates the Map longitude if manually changed"""
+        value = float(self.lineEdit_2.displayText())
+
+        # Bounds check on the United States, silently fall back to the old center on failure for now
+        if value <= -171.79111 or value >= -66.96466:
+            self.lineEdit_2.setText("{:.6f}".format(self.mapping.center[0]))
+            return
+
+
+        self.mapping.center = [value, self.mapping.center[1]]
+        self.mapping.update_plot()
 
     def retranslateUi(self, mapgui):
         _translate = QtCore.QCoreApplication.translate
@@ -112,10 +148,10 @@ class Ui_mapgui(object):
         self.label_2.setText(_translate("mapgui", self.mapping.dates[0]))
         self.label.setText(_translate("mapgui", self.mapping.dates[-1]))
         self.label_3.setText(_translate("mapgui", "Current Date: "))
-        self.lineEdit.setText(str(self.mapping.cur_date))
+        self.comboBox.setCurrentIndex(self.comboBox.findText(str(self.mapping.cur_date)))
         self.label_4.setText(_translate("mapgui", "Latitude | Longitude"))
-        self.lineEdit_3.setText(str(self.mapping.center[1]))
-        self.lineEdit_2.setText(str(self.mapping.center[0]))
+        self.lineEdit_3.setText("{:.6f}".format(self.mapping.center[1]))
+        self.lineEdit_2.setText("{:.6f}".format(self.mapping.center[0]))
 
 
 if __name__ == "__main__":
