@@ -33,6 +33,7 @@ class Map(FigureCanvasQTAgg):
         self.dragging = False
         self.drag_start = (0.0, 0.0)
         self.cur_date = "2021-02-28"
+        self.show_zip_codes = False
         self.dates = self.repo.get_dates()
         self.update_plot()
 
@@ -59,6 +60,9 @@ class Map(FigureCanvasQTAgg):
         zipcodes_data_visible.plot(ax=self.axes, column="value", legend=True, vmin=graph_min, vmax=graph_max,
                                    linewidth=10)
         zipcodes_data_visible.boundary.plot(ax=self.axes, edgecolor="white")
+        if self.show_zip_codes:
+            for idx, row in zipcodes_data_visible.iterrows():
+                self.axes.annotate(text=row[2], xy=row[5].centroid.coords[:][0], horizontalalignment='center')
         self.fig.canvas.draw()
 
         end = timeit.default_timer()

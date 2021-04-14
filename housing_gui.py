@@ -64,6 +64,11 @@ class Ui_mapgui(object):
         self.comboBox.addItems(self.mapping.dates)
         self.horizontalLayout_2.addWidget(self.comboBox)
 
+        self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox.setGeometry(QtCore.QRect(30, 590, 101, 17))
+        self.checkBox.setObjectName("checkBox")
+        self.checkBox.toggled.connect(self.show_zipcodes)
+
         # self.lineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget_2)
         # self.lineEdit.setMaximumSize(QtCore.QSize(150, 16777215))
         # self.lineEdit.setObjectName("lineEdit")
@@ -138,8 +143,12 @@ class Ui_mapgui(object):
             self.lineEdit_2.setText("{:.6f}".format(self.mapping.center[0]))
             return
 
-
         self.mapping.center = [value, self.mapping.center[1]]
+        self.mapping.update_plot()
+
+    def show_zipcodes(self):
+        """Changes the Map value to show zip codes"""
+        self.mapping.show_zip_codes = self.checkBox.isChecked()
         self.mapping.update_plot()
 
     def retranslateUi(self, mapgui):
@@ -152,6 +161,7 @@ class Ui_mapgui(object):
         self.label_4.setText(_translate("mapgui", "Latitude | Longitude"))
         self.lineEdit_3.setText("{:.6f}".format(self.mapping.center[1]))
         self.lineEdit_2.setText("{:.6f}".format(self.mapping.center[0]))
+        self.checkBox.setText(_translate("mapgui", "Show Zip Codes"))
 
 
 if __name__ == "__main__":
