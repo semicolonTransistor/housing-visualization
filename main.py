@@ -227,6 +227,12 @@ def update_database():
                     "WHERE zipcode = ?",
                     (row["minx"], row["maxx"], row["miny"], row["maxy"], int(row["GEOID10"])))
                 connection.commit()
+            else:
+                connection.execute(
+                    "INSERT INTO zipcodes (zipcode, longitude_min, longitude_max, latitude_min, latitude_max)"
+                    "VALUES (?, ?, ?, ?, ?)",
+                    (int(row["GEOID10"]), row["minx"], row["maxx"], row["miny"], row["maxy"]))
+                connection.commit()
     print("Done!")
 
 

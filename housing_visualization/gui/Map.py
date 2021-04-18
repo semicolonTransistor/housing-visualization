@@ -1,6 +1,9 @@
+import math
+
 import matplotlib
 import geopandas
 
+from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from housing_visualization.database.database_repository import DataRepository
@@ -12,7 +15,8 @@ from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon
 import shapely.geometry
 import numpy as np
-
+import copy
+import numpy as np
 
 import timeit
 
@@ -44,15 +48,16 @@ class Map(FigureCanvasQTAgg):
         self.cur_date = "2021-02-28"
         self.show_zip_codes = False
         self.dates = self.repo.get_dates()
-        self.update_plot()
+
+        self.cmap = copy.copy(cm.get_cmap("plasma"))
+        self.cmap.set_bad(color="lightgrey")
 
         self.do_update = False
         self.timer = Qt.QTimer(self)
         self.timer.timeout.connect(self.on_timer)
         self.timer.start(40)
 
-
-
+        self.update_plot()
 
     def update_plot(self):
         # print("plot")
@@ -65,7 +70,7 @@ class Map(FigureCanvasQTAgg):
         zipcodes_visible = self.repo.get_zipcodes_within_bbox(bbox[0], bbox[1])
         zipcodes_data_visible = self.zipcode_data[self.zipcode_data.ZCTA5CE10.isin(zipcodes_visible)].copy()
         zipcodes_data_visible["value"] = zipcodes_data_visible["ZCTA5CE10"].apply(
-            lambda zipcode: self.repo.get_house_value_by_date_and_zipcode(zipcode, "2021-02-28"))
+            lambda zipcode: self.repo.get_house_value_by_date_and_zipcode(zipcode, self.cur_date))
         graph_min = zipcodes_data_visible["value"].quantile(0.25)
         graph_max = zipcodes_data_visible["value"].quantile(0.75)
         polygons = zipcodes_data_visible["geometry"]
@@ -86,7 +91,8 @@ class Map(FigureCanvasQTAgg):
             poly = row["geometry"]
             value = row["value"]
 
-            value = max(min(graph_max, value), graph_min)
+            if value is None:
+                value = np.nan
 
             if isinstance(poly, shapely.geometry.MultiPolygon):
                 for sub_poly in poly:
@@ -97,16 +103,27 @@ class Map(FigureCanvasQTAgg):
                 a = np.asarray(poly.exterior)
                 patches.append(Polygon(a))
                 values.append(value)
-
         patches = PatchCollection(patches, edgecolors="white")
         values = np.asarray(values)
 
         if values is not None:
             patches.set_array(values)
-            patches.set_cmap("plasma")
+            patches.set_clim(vmin=graph_min, vmax=graph_max)
+            patches.set_cmap(self.cmap)
+
+        label = patches.get_label()
 
         self.axes.add_collection(patches, autolim=True)
         # zipcodes_data_visible.boundary.plot(ax=self.axes, edgecolor="white")
+
+        if self.show_zip_codes:
+            for idx, row in zipcodes_data_visible.iterrows():
+                self.axes.annotate(text=f"{row['ZCTA5CE10']:0>5}",
+                                   xy=row["geometry"].centroid.coords[:][0],
+                                   horizontalalignment='center',
+                                   color="darkgrey",
+                                   fontsize=10,
+                                   )
 
         t3 = timeit.default_timer()
 
@@ -152,7 +169,6 @@ class Map(FigureCanvasQTAgg):
         if self.do_update:
             self.do_update = False
             self.update_plot()
-
 
     def update_date_by_idx(self, idx):
         self.cur_date = self.dates[idx]

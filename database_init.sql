@@ -35,9 +35,9 @@ CREATE TABLE IF NOT EXISTS "cities" (
 );
 CREATE TABLE IF NOT EXISTS "zipcodes" (
 	"zipcode"	INTEGER,
-	"city"	INTEGER NOT NULL,
+	"city"	INTEGER,
 	"metro_area"	INTEGER,
-	"size_rank"	INTEGER NOT NULL,
+	"size_rank"	INTEGER,
 	"longitude_min"	REAL,
 	"longitude_max"	REAL,
 	"latitude_min"	REAL,

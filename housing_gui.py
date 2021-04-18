@@ -168,6 +168,18 @@ class Ui_mapgui(object):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
+
+    sys._excepthook = sys.excepthook
+
+
+    def exception_hook(exctype, value, traceback):
+        print(exctype, value, traceback)
+        sys._excepthook(exctype, value, traceback)
+        sys.exit(1)
+
+
+    sys.excepthook = exception_hook
+
     mapgui = QtWidgets.QMainWindow()
     ui = Ui_mapgui()
     ui.setupUi(mapgui)
