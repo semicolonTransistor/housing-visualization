@@ -13,6 +13,7 @@ from PyQt5 import QtCore
 import pandas as pd
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon
+from matplotlib.ticker import StrMethodFormatter
 import shapely.geometry
 import numpy as np
 import copy
@@ -127,7 +128,8 @@ class Map(FigureCanvasQTAgg):
 
         t3 = timeit.default_timer()
 
-        self.fig.colorbar(cm.ScalarMappable(norm=patches.norm, cmap=self.cmap), ax=self.axes)
+        comma_fmt = StrMethodFormatter("${x:,.0f}")
+        self.fig.colorbar(cm.ScalarMappable(norm=patches.norm, cmap=self.cmap), ax=self.axes, format=comma_fmt)
 
         self.fig.canvas.draw()
 
