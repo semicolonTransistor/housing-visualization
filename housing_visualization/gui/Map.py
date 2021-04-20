@@ -169,6 +169,10 @@ class Map(FigureCanvasQTAgg):
         if not event.buttons() & QtCore.Qt.MiddleButton:
             self.dragging = False
 
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.do_update = True
+
     def on_timer(self):
         if self.do_update:
             self.do_update = False
