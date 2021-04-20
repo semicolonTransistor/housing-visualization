@@ -127,6 +127,8 @@ class Map(FigureCanvasQTAgg):
 
         t3 = timeit.default_timer()
 
+        self.fig.colorbar(cm.ScalarMappable(norm=patches.norm, cmap=self.cmap), ax=self.axes)
+
         self.fig.canvas.draw()
 
         end = timeit.default_timer()
