@@ -129,9 +129,9 @@ class Map(FigureCanvasQTAgg):
         t3 = timeit.default_timer()
 
         comma_fmt = StrMethodFormatter("${x:,.0f}")
-        self.fig.colorbar(cm.ScalarMappable(norm=patches.norm, cmap=self.cmap), ax=self.axes, format=comma_fmt)
-
+        self.fig.colorbar(cm.ScalarMappable(norm=patches.norm, cmap=self.cmap), ax=self.axes, format=comma_fmt, pad=0.05)
         self.fig.canvas.draw()
+        self.fig.tight_layout()
 
         end = timeit.default_timer()
         print(f"{end - start}, {t1 - start}, {end - t1}")
