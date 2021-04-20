@@ -176,3 +176,4 @@ class Map(FigureCanvasQTAgg):
 
     def update_date_by_idx(self, idx):
         self.cur_date = self.dates[idx]
+        self.do_update = True

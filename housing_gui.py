@@ -96,7 +96,7 @@ class Ui_mapgui(object):
         self.horizontalSlider.setMinimum(0)
         self.horizontalSlider.setMaximum(len(self.mapping.dates)-1)
         self.horizontalSlider.valueChanged.connect(self.update_from_slider)
-        self.horizontalSlider.sliderReleased.connect(self.update_date)
+        self.horizontalSlider.valueChanged.connect(self.update_date)
 
         self.comboBox.addItems(self.mapping.dates)
         self.horizontalLayout_2.addWidget(self.comboBox)
@@ -121,7 +121,7 @@ class Ui_mapgui(object):
     def update_date(self):
         """Updates the Map date if the slider is released"""
         self.mapping.update_date_by_idx(self.horizontalSlider.value())
-        self.mapping.update_plot()
+        # self.mapping.update_plot()
 
     def update_lat_lon_text(self, value):
         """Updates the text of lat lon if the map is dragged"""
@@ -138,7 +138,7 @@ class Ui_mapgui(object):
             return
 
         self.mapping.center = [self.mapping.center[0], value]
-        self.mapping.update_plot()
+        self.mapping.do_update = True
 
     def update_lon(self):
         """Updates the Map longitude if manually changed"""
@@ -150,7 +150,7 @@ class Ui_mapgui(object):
             return
 
         self.mapping.center = [value, self.mapping.center[1]]
-        self.mapping.update_plot()
+        self.mapping.do_update = True
 
     def show_zipcodes(self):
         """Changes the Map value to show zip codes"""
