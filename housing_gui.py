@@ -29,9 +29,9 @@ class Ui_mapgui(object):
         self.widget.setObjectName("widget")
         self.mapping = Map()
         self.mapping.center_changed.connect(self.update_lat_lon_text)
+        self.mapping.clim_changed.connect(self.update_clim)
         self.verticalLayout.addWidget(self.mapping)
 
-        # self.verticalLayout_3.addWidget(self.widget)
         self.verticalLayout.addLayout(self.verticalLayout_3)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -68,20 +68,53 @@ class Ui_mapgui(object):
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
         self.label_4.setMinimumSize(QtCore.QSize(120, 0))
-        self.label_4.setMaximumSize(QtCore.QSize(16777215, 15))
-        self.label_4.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_4.setMaximumSize(QtCore.QSize(120, 15))
+        self.label_4.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.label_4.setObjectName("label_4")
         self.horizontalLayout_3.addWidget(self.label_4)
         self.lineEdit_3 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_3.setMaximumSize(QtCore.QSize(100, 16777215))
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.horizontalLayout_3.addWidget(self.lineEdit_3)
         self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_2.setMaximumSize(QtCore.QSize(100, 16777215))
         self.lineEdit_2.setObjectName("lineEdit_2")
         self.horizontalLayout_3.addWidget(self.lineEdit_2)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox.setMaximumSize(QtCore.QSize(100, 16777215))
         self.checkBox.setObjectName("checkBox")
-        self.verticalLayout_2.addWidget(self.checkBox)
+        self.horizontalLayout_4.addWidget(self.checkBox)
+        self.comboBox_2 = QtWidgets.QComboBox(self.centralwidget)
+        self.comboBox_2.setMinimumSize(QtCore.QSize(150, 0))
+        self.comboBox_2.setMaximumSize(QtCore.QSize(200, 16777215))
+        self.comboBox_2.setObjectName("comboBox_2")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.horizontalLayout_4.addWidget(self.comboBox_2)
+        self.label_5 = QtWidgets.QLabel(self.centralwidget)
+        self.label_5.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.label_5.setObjectName("label_5")
+        self.horizontalLayout_4.addWidget(self.label_5)
+        self.lineEdit_4 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_4.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.lineEdit_4.setObjectName("lineEdit_4")
+        self.horizontalLayout_4.addWidget(self.lineEdit_4)
+        self.label_6 = QtWidgets.QLabel(self.centralwidget)
+        self.label_6.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.label_6.setObjectName("label_6")
+        self.horizontalLayout_4.addWidget(self.label_6)
+        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.lineEdit.setObjectName("lineEdit")
+        self.horizontalLayout_4.addWidget(self.lineEdit)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_4.addItem(spacerItem1)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
         self.verticalLayout.addLayout(self.verticalLayout_2)
         self.verticalLayout_4.addLayout(self.verticalLayout)
         mapgui.setCentralWidget(self.centralwidget)
@@ -99,10 +132,13 @@ class Ui_mapgui(object):
         self.horizontalSlider.valueChanged.connect(self.update_date)
 
         self.comboBox.addItems(self.mapping.dates)
+        self.comboBox.currentIndexChanged.connect(self.update_date_from_combobox)
         self.horizontalLayout_2.addWidget(self.comboBox)
+        self.comboBox_2.currentIndexChanged.connect(self.change_colorbar_mode)
 
         self.checkBox.toggled.connect(self.show_zipcodes)
-
+        self.lineEdit_4.editingFinished.connect(self.update_clim_val)
+        self.lineEdit.editingFinished.connect(self.update_clim_val)
         self.lineEdit_2.editingFinished.connect(self.update_lon)
         self.lineEdit_3.editingFinished.connect(self.update_lat)
         self.horizontalLayout_3.addWidget(self.lineEdit_2)
@@ -118,6 +154,10 @@ class Ui_mapgui(object):
         """Updates the date while the slider is being moved"""
         self.comboBox.setCurrentIndex(slider_val)
 
+    def update_date_from_combobox(self):
+        self.horizontalSlider.setValue(self.comboBox.currentIndex())
+        self.update_date()
+
     def update_date(self):
         """Updates the Map date if the slider is released"""
         self.mapping.update_date_by_idx(self.horizontalSlider.value())
@@ -127,6 +167,23 @@ class Ui_mapgui(object):
         """Updates the text of lat lon if the map is dragged"""
         self.lineEdit_3.setText("{:.6f}".format(value[1]))
         self.lineEdit_2.setText("{:.6f}".format(value[0]))
+
+    def change_colorbar_mode(self):
+        if self.comboBox_2.currentIndex() == 0:
+            self.mapping.color_bar_auto_range = True
+        else:
+            self.mapping.color_bar_auto_range = False
+
+        self.mapping.do_update = True
+
+    def update_clim(self, value):
+        self.lineEdit_4.setText("{}".format(value[0]))
+        self.lineEdit.setText("{}".format(value[1]))
+
+    def update_clim_val(self):
+        color_axis = (float(self.lineEdit_4.displayText()), float(self.lineEdit.displayText()))
+        self.mapping.color_axis = color_axis
+        self.mapping.do_update = True
 
     def update_lat(self):
         """Updates the Map latitude if manually changed"""
@@ -167,8 +224,12 @@ class Ui_mapgui(object):
         self.label_4.setText(_translate("mapgui", "Latitude | Longitude"))
         self.lineEdit_3.setText("{:.6f}".format(self.mapping.center[1]))
         self.lineEdit_2.setText("{:.6f}".format(self.mapping.center[0]))
-        self.checkBox.setText(_translate("mapgui", "Show Zip Codes"))
         self.horizontalSlider.setValue(self.horizontalSlider.maximum())
+        self.checkBox.setText(_translate("mapgui", "Show Labels"))
+        self.comboBox_2.setItemText(0, _translate("mapgui", "Auto-scaling Color Bar"))
+        self.comboBox_2.setItemText(1, _translate("mapgui", "Static Color Bar"))
+        self.label_5.setText(_translate("mapgui", "Color Bar Minimum"))
+        self.label_6.setText(_translate("mapgui", "Color Bar Maximum"))
 
 
 if __name__ == "__main__":

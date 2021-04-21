@@ -45,6 +45,7 @@ class Map(FigureCanvasQTAgg):
     min_update_interval = 0.1
 
     center_changed = QtCore.pyqtSignal(object)
+    clim_changed = QtCore.pyqtSignal(object)
 
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
@@ -54,7 +55,7 @@ class Map(FigureCanvasQTAgg):
         self.zipcode_data["id"] = self.zipcode_data["ZCTA5CE10"].apply(lambda x: int(x))
         self.county_data = geopandas.read_file("data/geography/county")
         self.county_data["id"] = self.county_data.apply(lambda x: int(x["STATEFP"] + x["COUNTYFP"]), axis=1)
-        self.state_data = geopandas.read_file("data/geography/states")
+        self.state_data = geopandas.read_file("data/geography/state")
         print(self.state_data)
         self.state_data["id"] = self.state_data.apply(lambda x: int(x["STATEFP"]), axis=1)
 
@@ -66,6 +67,8 @@ class Map(FigureCanvasQTAgg):
         self.graph_min = 1000
         self.graph_max = 1000000
         self.color_bar_auto_range = True
+        self.color_axis = (0, 1500000)
+        self.cur_clim = None
 
         self.repo = DataRepository("data/housing.sqlite")
         self.last_update = timeit.default_timer()
@@ -155,7 +158,12 @@ class Map(FigureCanvasQTAgg):
 
         if values is not None:
             patches.set_array(values)
-            patches.set_clim(vmin=self.graph_min, vmax=self.graph_max)
+            if self.color_bar_auto_range:
+                patches.set_clim(vmin=self.graph_min, vmax=self.graph_max)
+            else:
+                patches.set_clim(vmin=self.color_axis[0], vmax=self.color_axis[1])
+            self.color_axis = patches.get_clim()
+            self.clim_changed.emit(self.color_axis)
             patches.set_cmap(self.cmap)
 
         self.axes.add_collection(patches, autolim=True)

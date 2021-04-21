@@ -125,111 +125,111 @@ def update_database():
         ensure_directory("data/geography/state")
         z.extractall("data/geography/state")
 
-    # if os.path.exists("data/housing.sqlite"):
-    #     print("Dropping Database...")
-    #     os.remove("data/housing.sqlite")
-    #
+    if os.path.exists("data/housing.sqlite"):
+        print("Dropping Database...")
+        os.remove("data/housing.sqlite")
+
     # # setting up the database
     # print("Creating Database")
     repo = DataRepository("data/housing.sqlite")
-    # print("Constructing Database...")
-    # with open("database_init.sql") as f:
-    #     repo.conn.executescript(f.read())
-    #
-    # with open("states_table_init.sql") as f:
-    #     repo.conn.executescript(f.read())
+    print("Constructing Database...")
+    with open("database_init.sql") as f:
+        repo.conn.executescript(f.read())
 
-    # print("Parsing Housing Data...")
-    #
-    # with open("data/housing/house_value_states.csv") as f:
-    #     # init date array:
-    #     header = f.readline()
-    #     date_strings = header.split(",")[9:]
-    #
-    #     date_strings = tuple(map(lambda s: s.strip(" \n\""), date_strings))
-    #
-    #     lines = f.readlines()
-    #     for i in tqdm.trange(len(lines)):
-    #         line = lines[i]
-    #         entry_strings = line.split(",")
-    #
-    #         # size_rank = int(entry_strings[1].strip(" \n\""))
-    #         state_name = entry_strings[4].strip(" \n\"")
-    #         state_id = repo.get_state_id(state_name)
-    #
-    #         data_strings = entry_strings[9:]
-    #         data = list()
-    #         for j in range(len(data_strings)):
-    #             data_string = data_strings[j]
-    #             data_string = data_string.strip(" \n\"")
-    #             if data_string:
-    #                 data.append((state_id, date_strings[j], float(data_string)))
-    #
-    #         repo.conn.executemany("INSERT INTO house_values_by_state (state, date, value) VALUES (?, ?, ?)", data)
-    #         repo.conn.commit()
-    #
-    # with open("data/housing/house_value_county.csv") as f:
-    #     # init date array:
-    #     header = f.readline()
-    #     date_strings = header.split(",")[9:]
-    #
-    #     date_strings = tuple(map(lambda s: s.strip(" \n\""), date_strings))
-    #
-    #     lines = f.readlines()
-    #     for i in tqdm.trange(len(lines)):
-    #         line = lines[i]
-    #         entry_strings = line.split(",")
-    #         # RegionID,SizeRank,RegionName,RegionType,StateName,State,City,Metro,CountyName
-    #         size_rank = int(entry_strings[1].strip(" \n\""))
-    #         state_id = int(entry_strings[7].strip(" \n\""))
-    #         county_id = state_id * 1000 + int(entry_strings[8].strip(" \n\""))
-    #         name = entry_strings[2].strip(" \n\"")
-    #         metro_area_id = repo.get_metro_area_id(entry_strings[6].strip(" \n\""))
-    #         repo.conn.execute("INSERT INTO counties (id, state, name, metro_area, size_rank) VALUES (?, ?, ?, ?, ?)",
-    #                           (county_id, state_id, name, metro_area_id, size_rank))
-    #
-    #         data_strings = entry_strings[9:]
-    #         data = list()
-    #         for j in range(len(data_strings)):
-    #             data_string = data_strings[j]
-    #             data_string = data_string.strip(" \n\"")
-    #             if data_string:
-    #                 data.append((county_id, date_strings[j], float(data_string)))
-    #
-    #         repo.conn.executemany("INSERT INTO house_values_by_county (county, date, value) VALUES (?, ?, ?)", data)
-    #         repo.conn.commit()
-    #
-    # with open("data/housing/house_value_zip.csv") as f:
-    #     # init date array:
-    #     header = f.readline()
-    #     date_strings = header.split(",")[9:]
-    #
-    #     date_strings = tuple(map(lambda s: s.strip(" \n\""), date_strings))
-    #
-    #     lines = f.readlines()
-    #     for i in tqdm.trange(len(lines)):
-    #         line = lines[i]
-    #         entry_strings = line.split(",")
-    #         # RegionID,SizeRank,RegionName,RegionType,StateName,State,City,Metro,CountyName
-    #         size_rank = int(entry_strings[1].strip(" \n\""))
-    #         zipcode = int(entry_strings[2].strip(" \n\""))
-    #         metro_area_id = repo.get_metro_area_id(entry_strings[7].strip(" \n\""))
-    #         city_id = repo.get_city_id(entry_strings[5].strip(" \n\""),
-    #                                    entry_strings[8].strip(" \n\""),
-    #                                    entry_strings[6].strip(" \n\""))
-    #         repo.conn.execute("INSERT INTO zipcodes (zipcode, city, metro_area, size_rank) VALUES (?, ?, ?, ?)",
-    #                           (zipcode, city_id, metro_area_id, size_rank))
-    #
-    #         data_strings = entry_strings[9:]
-    #         data = list()
-    #         for j in range(len(data_strings)):
-    #             data_string = data_strings[j]
-    #             data_string = data_string.strip(" \n\"")
-    #             if data_string:
-    #                 data.append((zipcode, date_strings[j], float(data_string)))
-    #
-    #         repo.conn.executemany("INSERT INTO house_values (zipcode, date, value) VALUES (?, ?, ?)", data)
-    #         repo.conn.commit()
+    with open("states_table_init.sql") as f:
+        repo.conn.executescript(f.read())
+
+    print("Parsing Housing Data...")
+
+    with open("data/housing/house_value_states.csv") as f:
+        # init date array:
+        header = f.readline()
+        date_strings = header.split(",")[9:]
+
+        date_strings = tuple(map(lambda s: s.strip(" \n\""), date_strings))
+
+        lines = f.readlines()
+        for i in tqdm.trange(len(lines)):
+            line = lines[i]
+            entry_strings = line.split(",")
+
+            # size_rank = int(entry_strings[1].strip(" \n\""))
+            state_name = entry_strings[4].strip(" \n\"")
+            state_id = repo.get_state_id(state_name)
+
+            data_strings = entry_strings[9:]
+            data = list()
+            for j in range(len(data_strings)):
+                data_string = data_strings[j]
+                data_string = data_string.strip(" \n\"")
+                if data_string:
+                    data.append((state_id, date_strings[j], float(data_string)))
+
+            repo.conn.executemany("INSERT INTO house_values_by_state (state, date, value) VALUES (?, ?, ?)", data)
+            repo.conn.commit()
+
+    with open("data/housing/house_value_county.csv") as f:
+        # init date array:
+        header = f.readline()
+        date_strings = header.split(",")[9:]
+
+        date_strings = tuple(map(lambda s: s.strip(" \n\""), date_strings))
+
+        lines = f.readlines()
+        for i in tqdm.trange(len(lines)):
+            line = lines[i]
+            entry_strings = line.split(",")
+            # RegionID,SizeRank,RegionName,RegionType,StateName,State,City,Metro,CountyName
+            size_rank = int(entry_strings[1].strip(" \n\""))
+            state_id = int(entry_strings[7].strip(" \n\""))
+            county_id = state_id * 1000 + int(entry_strings[8].strip(" \n\""))
+            name = entry_strings[2].strip(" \n\"")
+            metro_area_id = repo.get_metro_area_id(entry_strings[6].strip(" \n\""))
+            repo.conn.execute("INSERT INTO counties (id, state, name, metro_area, size_rank) VALUES (?, ?, ?, ?, ?)",
+                              (county_id, state_id, name, metro_area_id, size_rank))
+
+            data_strings = entry_strings[9:]
+            data = list()
+            for j in range(len(data_strings)):
+                data_string = data_strings[j]
+                data_string = data_string.strip(" \n\"")
+                if data_string:
+                    data.append((county_id, date_strings[j], float(data_string)))
+
+            repo.conn.executemany("INSERT INTO house_values_by_county (county, date, value) VALUES (?, ?, ?)", data)
+            repo.conn.commit()
+
+    with open("data/housing/house_value_zip.csv") as f:
+        # init date array:
+        header = f.readline()
+        date_strings = header.split(",")[9:]
+
+        date_strings = tuple(map(lambda s: s.strip(" \n\""), date_strings))
+
+        lines = f.readlines()
+        for i in tqdm.trange(len(lines)):
+            line = lines[i]
+            entry_strings = line.split(",")
+            # RegionID,SizeRank,RegionName,RegionType,StateName,State,City,Metro,CountyName
+            size_rank = int(entry_strings[1].strip(" \n\""))
+            zipcode = int(entry_strings[2].strip(" \n\""))
+            metro_area_id = repo.get_metro_area_id(entry_strings[7].strip(" \n\""))
+            city_id = repo.get_city_id(entry_strings[5].strip(" \n\""),
+                                       entry_strings[8].strip(" \n\""),
+                                       entry_strings[6].strip(" \n\""))
+            repo.conn.execute("INSERT INTO zipcodes (zipcode, city, metro_area, size_rank) VALUES (?, ?, ?, ?)",
+                              (zipcode, city_id, metro_area_id, size_rank))
+
+            data_strings = entry_strings[9:]
+            data = list()
+            for j in range(len(data_strings)):
+                data_string = data_strings[j]
+                data_string = data_string.strip(" \n\"")
+                if data_string:
+                    data.append((zipcode, date_strings[j], float(data_string)))
+
+            repo.conn.executemany("INSERT INTO house_values (zipcode, date, value) VALUES (?, ?, ?)", data)
+            repo.conn.commit()
 
     print("Parsing Zipcode Geographic Data...")
     zip_gdf = geopandas.read_file("data/geography/zipcode")
@@ -238,18 +238,21 @@ def update_database():
 
     print("Inserting Bounding Box Data into Database...")
     for index, row in tqdm.tqdm(d.iterrows(), total=d.shape[0]):
-        if repo.conn.execute("SELECT count(zipcode) FROM zipcodes WHERE zipcode = ?", (row["GEOID10"],)).fetchone()[0]:
-            repo.conn.execute(
-                "UPDATE zipcodes SET longitude_min = ?, longitude_max = ?, latitude_min = ?, latitude_max = ? "
-                "WHERE zipcode = ?",
-                (row["minx"], row["maxx"], row["miny"], row["maxy"], int(row["GEOID10"])))
-            repo.conn.commit()
-        else:
-            repo.conn.execute(
-                "INSERT INTO zipcodes (zipcode, longitude_min, longitude_max, latitude_min, latitude_max)"
-                "VALUES (?, ?, ?, ?, ?)",
-                (int(row["GEOID10"]), row["minx"], row["maxx"], row["miny"], row["maxy"]))
-            repo.conn.commit()
+        try:
+            if repo.conn.execute("SELECT count(zipcode) FROM zipcodes WHERE zipcode = ?", (row["GEOID10"],)).fetchone()[0]:
+                repo.conn.execute(
+                    "UPDATE zipcodes SET longitude_min = ?, longitude_max = ?, latitude_min = ?, latitude_max = ? "
+                    "WHERE zipcode = ?",
+                    (row["minx"], row["maxx"], row["miny"], row["maxy"], int(row["GEOID10"])))
+                repo.conn.commit()
+            else:
+                repo.conn.execute(
+                    "INSERT INTO zipcodes (zipcode, longitude_min, longitude_max, latitude_min, latitude_max)"
+                    "VALUES (?, ?, ?, ?, ?)",
+                    (int(row["GEOID10"]), row["minx"], row["maxx"], row["miny"], row["maxy"]))
+                repo.conn.commit()
+        except:
+            pass
 
     print("Parsing County Geographic Data...")
     county = geopandas.read_file("data/geography/county")
