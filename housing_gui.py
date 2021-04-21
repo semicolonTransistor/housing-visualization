@@ -15,97 +15,103 @@ from housing_visualization.gui.Map import Map
 class Ui_mapgui(object):
     def setupUi(self, mapgui):
         mapgui.setObjectName("mapgui")
-        mapgui.resize(882, 702)
+        mapgui.resize(1085, 919)
         self.centralwidget = QtWidgets.QWidget(mapgui)
         self.centralwidget.setObjectName("centralwidget")
-        self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(20, 10, 761, 481))
-        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
-        self.widget = QtWidgets.QWidget(self.verticalLayoutWidget)
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.widget = QtWidgets.QWidget(self.centralwidget)
+        self.widget.setMinimumSize(QtCore.QSize(0, 500))
         self.widget.setObjectName("widget")
         self.mapping = Map()
         self.mapping.center_changed.connect(self.update_lat_lon_text)
         self.verticalLayout.addWidget(self.mapping)
-        self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(20, 500, 761, 82))
-        self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+
+        # self.verticalLayout_3.addWidget(self.widget)
+        self.verticalLayout.addLayout(self.verticalLayout_3)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.horizontalSlider = QtWidgets.QSlider(self.verticalLayoutWidget_2)
+        self.horizontalSlider = QtWidgets.QSlider(self.centralwidget)
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider.setObjectName("horizontalSlider")
-        self.horizontalSlider.setMinimum(0)
-        self.horizontalSlider.setMaximum(len(self.mapping.dates)-1)
-        self.horizontalSlider.valueChanged.connect(self.update_from_slider)
-        self.horizontalSlider.sliderReleased.connect(self.update_date)
-
         self.verticalLayout_2.addWidget(self.horizontalSlider)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label_2 = QtWidgets.QLabel(self.verticalLayoutWidget_2)
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setMinimumSize(QtCore.QSize(200, 0))
+        self.label_2.setMaximumSize(QtCore.QSize(16777215, 15))
         self.label_2.setObjectName("label_2")
         self.horizontalLayout.addWidget(self.label_2)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.label_3 = QtWidgets.QLabel(self.verticalLayoutWidget_2)
-        self.label_3.setMinimumSize(QtCore.QSize(50, 0))
-        self.label_3.setMaximumSize(QtCore.QSize(1000, 16777215))
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setMaximumSize(QtCore.QSize(75, 15))
         self.label_3.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_3.setObjectName("label_3")
         self.horizontalLayout_2.addWidget(self.label_3)
-
-        self.comboBox = QtWidgets.QComboBox(self.verticalLayoutWidget_2)
+        self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItems(self.mapping.dates)
         self.horizontalLayout_2.addWidget(self.comboBox)
-
-        self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
-        self.checkBox.setGeometry(QtCore.QRect(30, 590, 101, 17))
-        self.checkBox.setObjectName("checkBox")
-        self.checkBox.toggled.connect(self.show_zipcodes)
-
-        # self.lineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget_2)
-        # self.lineEdit.setMaximumSize(QtCore.QSize(150, 16777215))
-        # self.lineEdit.setObjectName("lineEdit")
-        # self.horizontalLayout_2.addWidget(self.lineEdit)
         self.horizontalLayout.addLayout(self.horizontalLayout_2)
-        self.label = QtWidgets.QLabel(self.verticalLayoutWidget_2)
+        self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setMinimumSize(QtCore.QSize(200, 0))
+        self.label.setMaximumSize(QtCore.QSize(16777215, 15))
         self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label.setObjectName("label")
         self.horizontalLayout.addWidget(self.label)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.label_4 = QtWidgets.QLabel(self.verticalLayoutWidget_2)
+        self.label_4 = QtWidgets.QLabel(self.centralwidget)
         self.label_4.setMinimumSize(QtCore.QSize(120, 0))
+        self.label_4.setMaximumSize(QtCore.QSize(16777215, 15))
         self.label_4.setAlignment(QtCore.Qt.AlignCenter)
         self.label_4.setObjectName("label_4")
         self.horizontalLayout_3.addWidget(self.label_4)
-        self.lineEdit_3 = QtWidgets.QLineEdit(self.verticalLayoutWidget_2)
+        self.lineEdit_3 = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.horizontalLayout_3.addWidget(self.lineEdit_3)
-        self.lineEdit_2 = QtWidgets.QLineEdit(self.verticalLayoutWidget_2)
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit_2.setObjectName("lineEdit_2")
-        self.lineEdit_2.editingFinished.connect(self.update_lon)
-        self.lineEdit_3.editingFinished.connect(self.update_lat)
         self.horizontalLayout_3.addWidget(self.lineEdit_2)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
+        self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox.setObjectName("checkBox")
+        self.verticalLayout_2.addWidget(self.checkBox)
+        self.verticalLayout.addLayout(self.verticalLayout_2)
+        self.verticalLayout_4.addLayout(self.verticalLayout)
         mapgui.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(mapgui)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 882, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1085, 21))
         self.menubar.setObjectName("menubar")
         mapgui.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(mapgui)
         self.statusbar.setObjectName("statusbar")
         mapgui.setStatusBar(self.statusbar)
 
+        self.horizontalSlider.setMinimum(0)
+        self.horizontalSlider.setMaximum(len(self.mapping.dates)-1)
+        self.horizontalSlider.valueChanged.connect(self.update_from_slider)
+        self.horizontalSlider.valueChanged.connect(self.update_date)
+
+        self.comboBox.addItems(self.mapping.dates)
+        self.horizontalLayout_2.addWidget(self.comboBox)
+
+        self.checkBox.toggled.connect(self.show_zipcodes)
+
+        self.lineEdit_2.editingFinished.connect(self.update_lon)
+        self.lineEdit_3.editingFinished.connect(self.update_lat)
+        self.horizontalLayout_3.addWidget(self.lineEdit_2)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_3)
+        mapgui.setCentralWidget(self.centralwidget)
+
         self.retranslateUi(mapgui)
+        self.mapping.update_plot()
+
         QtCore.QMetaObject.connectSlotsByName(mapgui)
 
     def update_from_slider(self, slider_val):
@@ -115,7 +121,7 @@ class Ui_mapgui(object):
     def update_date(self):
         """Updates the Map date if the slider is released"""
         self.mapping.update_date_by_idx(self.horizontalSlider.value())
-        self.mapping.update_plot()
+        # self.mapping.update_plot()
 
     def update_lat_lon_text(self, value):
         """Updates the text of lat lon if the map is dragged"""
@@ -132,7 +138,7 @@ class Ui_mapgui(object):
             return
 
         self.mapping.center = [self.mapping.center[0], value]
-        self.mapping.update_plot()
+        self.mapping.do_update = True
 
     def update_lon(self):
         """Updates the Map longitude if manually changed"""
@@ -144,7 +150,7 @@ class Ui_mapgui(object):
             return
 
         self.mapping.center = [value, self.mapping.center[1]]
-        self.mapping.update_plot()
+        self.mapping.do_update = True
 
     def show_zipcodes(self):
         """Changes the Map value to show zip codes"""

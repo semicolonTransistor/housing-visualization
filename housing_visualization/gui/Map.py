@@ -13,6 +13,7 @@ from PyQt5 import QtCore
 import pandas as pd
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon
+from matplotlib.ticker import StrMethodFormatter
 import shapely.geometry
 import numpy as np
 import copy
@@ -127,9 +128,10 @@ class Map(FigureCanvasQTAgg):
 
         t3 = timeit.default_timer()
 
-        self.fig.colorbar(cm.ScalarMappable(norm=patches.norm, cmap=self.cmap), ax=self.axes)
-
+        comma_fmt = StrMethodFormatter("${x:,.0f}")
+        self.fig.colorbar(cm.ScalarMappable(norm=patches.norm, cmap=self.cmap), ax=self.axes, format=comma_fmt, pad=0.05)
         self.fig.canvas.draw()
+        self.fig.tight_layout()
 
         end = timeit.default_timer()
         print(f"{end - start}, {t1 - start}, {end - t1}")
@@ -167,6 +169,10 @@ class Map(FigureCanvasQTAgg):
         if not event.buttons() & QtCore.Qt.MiddleButton:
             self.dragging = False
 
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.do_update = True
+
     def on_timer(self):
         if self.do_update:
             self.do_update = False
@@ -174,3 +180,4 @@ class Map(FigureCanvasQTAgg):
 
     def update_date_by_idx(self, idx):
         self.cur_date = self.dates[idx]
+        self.do_update = True
