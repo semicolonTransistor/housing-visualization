@@ -13,7 +13,7 @@ fig, ax = plt.subplots(1, 1)
 
 ax.set(xlim=bbox[0], ylim=bbox[1])
 
-states = geopandas.read_file("data/geography/states")
+states = geopandas.read_file("data/geography/state")
 zipcode_data = geopandas.read_file("data/geography/zipcode")
 # shore_line_data = geopandas.read_file("data/geography/shoreline")
 zipcode_data["ZCTA5CE10"] = zipcode_data["ZCTA5CE10"].apply(lambda x: int(x))

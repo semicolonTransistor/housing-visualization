@@ -8,7 +8,7 @@ def main():
         data = map(lambda x: (x[0], x[1], int(x[2])),
                    map(lambda line: tuple(map(lambda s: s.strip(), line.split("\t"))), f))
 
-        cursor.executemany("INSERT INTO states (name, abbreviation, id) VALUES (?, ?, ?)", data)
+        cursor.executemany("INSERT INTO state (name, abbreviation, id) VALUES (?, ?, ?)", data)
 
     connection.commit()
     connection.close()
