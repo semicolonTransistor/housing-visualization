@@ -79,11 +79,49 @@ class DataRepository:
                                    longitude_limits + latitude_limits).fetchall()
         return tuple(map(lambda x: int(x[0]), result))
 
+    def get_counties_within_bbox(self,
+                                 longitude_limits: Tuple[float, float],
+                                 latitude_limits: Tuple[float, float]) -> Tuple[int]:
+        result = self.conn.execute("SELECT id FROM counties WHERE longitude_max > ? AND longitude_min < ? "
+                                   "AND latitude_max > ? AND latitude_min < ?",
+                                   longitude_limits + latitude_limits).fetchall()
+        return tuple(map(lambda x: int(x[0]), result))
+
+    def get_states_within_bbox(self,
+                               longitude_limits: Tuple[float, float],
+                               latitude_limits: Tuple[float, float]) -> Tuple[int]:
+        result = self.conn.execute("SELECT id FROM states WHERE longitude_max > ? AND longitude_min < ? "
+                                   "AND latitude_max > ? AND latitude_min < ?",
+                                   longitude_limits + latitude_limits).fetchall()
+        return tuple(map(lambda x: int(x[0]), result))
+
     def get_house_value_by_date_and_zipcode(self,
                                             zipcode: int,
                                             date: str):
         result = self.conn.execute("SELECT value FROM house_values WHERE zipcode = ? AND date = ?",
                                    (zipcode, date)).fetchone()
+
+        if result is not None:
+            return result[0]
+        else:
+            return None
+
+    def get_house_value_by_date_and_county(self,
+                                           county_fips: int,
+                                           date: str):
+        result = self.conn.execute("SELECT value FROM house_values_by_county WHERE county = ? AND date = ?",
+                                   (county_fips, date)).fetchone()
+
+        if result is not None:
+            return result[0]
+        else:
+            return None
+
+    def get_house_value_by_date_and_state(self,
+                                          state_fips: int,
+                                          date: str):
+        result = self.conn.execute("SELECT value FROM house_values_by_state WHERE state = ? AND date = ?",
+                                   (state_fips, date)).fetchone()
 
         if result is not None:
             return result[0]

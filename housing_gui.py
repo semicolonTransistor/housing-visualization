@@ -155,7 +155,7 @@ class Ui_mapgui(object):
     def show_zipcodes(self):
         """Changes the Map value to show zip codes"""
         self.mapping.show_zip_codes = self.checkBox.isChecked()
-        self.mapping.update_plot()
+        self.mapping.do_update = True
 
     def retranslateUi(self, mapgui):
         _translate = QtCore.QCoreApplication.translate
