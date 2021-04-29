@@ -181,7 +181,7 @@ class Map(FigureCanvasQTAgg):
                                        )
             else:
                 for idx, row in geo_data_visible.iterrows():
-                    color = "white" if row["value"] < graph_mid else "black"
+                    color = "white" if row["value"] is not None and row["value"] < graph_mid else "black"
                     self.axes.annotate(text=row["NAME"],
                                        xy=row["geometry"].centroid.coords[:][0],
                                        horizontalalignment='center',
